@@ -28,7 +28,7 @@ Then /^the (?:fix|FIX)(?: message)?(?: at(?: tag)? "(.*?)")? should( not)? be:$/
   if tag.nil? and exp_value.match(/{*}/).nil?
     require 'fix_spec/builder'
     factory = quickfix.DefaultMessageFactory.new
-    exp_message = FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, fixify(exp_value) )
+    exp_message = FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(exp_value) )
     exp_value = FIXSpec::Helpers.message_to_unordered_json(exp_message)
   end
 

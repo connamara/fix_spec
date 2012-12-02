@@ -1,6 +1,6 @@
-# rcov generated
-coverage
-coverage.data
+*.swp
+
+features/reports
 
 # rdoc generated
 rdoc

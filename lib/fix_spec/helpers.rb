@@ -3,6 +3,24 @@ module FIXSpec
   module Helpers
     extend self
 
+    def fixify_string msg_str
+      message = msg_str.strip
+      begin_string = message.slice!(/^8=.*?[\001]/)
+
+      raise "Message '#{msg_str}' has no begin string" if begin_string.nil?
+
+      #nobody's perfect, allow for missing trailing soh 
+      message+="\001" unless message.end_with?("\001")
+
+      #auto-calc length and checksum, ignore any existing
+      message.slice!(/^9=\d+\001/)
+      message.gsub!(/10=\d\d\d\001$/,"")
+
+      length = "9=#{message.length}\001"
+      checksum = "10=%03d\001" % (begin_string + length + message).sum(8)
+      return (begin_string + length + message + checksum)
+    end
+
     def message_to_unordered_json msg
       msg_hash = field_map_to_hash msg.get_header
       msg_hash.merge! field_map_to_hash msg
@@ -11,17 +29,10 @@ module FIXSpec
       MultiJson.encode msg_hash
     end
 
-    def message_to_json msg
-      MultiJson.encode message_to_hash(msg)
-    end
-
     def message_to_hash msg
-      msg_hash = {}
-      msg_hash[:header] = field_map_to_hash msg.get_header
-      msg_hash[:body] = field_map_to_hash msg
-      msg_hash[:trailer] = field_map_to_hash msg.get_trailer
-
-      return msg_hash
+      msg_hash = field_map_to_hash msg.get_header
+      msg_hash.merge! field_map_to_hash msg
+      msg_hash.merge field_map_to_hash msg.get_trailer
     end
 
     def field_map_to_hash field_map
