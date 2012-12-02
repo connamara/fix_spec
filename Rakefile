@@ -23,7 +23,12 @@ Jeweler::Tasks.new do |gem|
   gem.authors = ["Chris Busbey"]
   # dependencies defined in Gemfile
 end
-Jeweler::RubygemsDotOrgTasks.new
+
+require "rspec/core"
+require "rspec/core/rake_task"
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = FileList['spec/**/*_spec.rb']
+end
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -32,15 +37,7 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
-end
-
-task :default => :test
+task :default => :spec
 
 require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
@@ -50,4 +47,9 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title = "fix_spec #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+require 'cucumber/rake/task'
+Cucumber::Rake::Task.new do |t|
+  t.cucumber_opts = %w{--color --format pretty --format junit --out features/reports}
 end
