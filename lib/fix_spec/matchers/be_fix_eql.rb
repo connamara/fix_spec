@@ -26,8 +26,7 @@ module FIXSpec
 
       def matches?(fix_message)
         fix_json =  message_to_unordered_json(fix_message)
-
-       @json_matcher.matches? fix_json
+        @json_matcher.matches? fix_json
       end
 
       def failure_message_for_should

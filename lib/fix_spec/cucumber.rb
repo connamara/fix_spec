@@ -44,10 +44,8 @@ Then /^the (?:FIX|fix)(?: message)?(?: at "(.*)")? should have the following:$/ 
     path = [base, path].compact.join("/")
 
     if value
-      puts %(the fix at "#{path}" should be:), value
       step %(the fix at "#{path}" should be:), value
     else
-      puts %(the fix should have "#{path}")
       step %(the fix should have "#{path}")
     end
   end

@@ -47,8 +47,16 @@ module FIXSpec
         if !FIXSpec::data_dictionary.nil? and FIXSpec::data_dictionary.is_field(tag)
           value = case FIXSpec::data_dictionary.get_field_type_enum(tag).get_name
             when "INT","DAYOFMONTH" then value.to_i
-            else value
-          end
+            when "PRICE","FLOAT","QTY" then value.to_f
+            when "BOOLEAN" then value == "Y"
+            else 
+              value_name = FIXSpec::data_dictionary.get_value_name(tag, value)
+              unless value_name.nil?
+                value_name
+              else
+                value
+              end
+            end
 
           tag = FIXSpec::data_dictionary.get_field_name(tag)
         end
