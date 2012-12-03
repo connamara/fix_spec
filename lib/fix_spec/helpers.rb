@@ -44,6 +44,15 @@ module FIXSpec
         tag = field.get_tag
         value = field.get_value
 
+        if !FIXSpec::data_dictionary.nil? and FIXSpec::data_dictionary.is_field(tag)
+          value = case FIXSpec::data_dictionary.get_field_type_enum(tag).get_name
+            when "INT","DAYOFMONTH" then value.to_i
+            else value
+          end
+
+          tag = FIXSpec::data_dictionary.get_field_name(tag)
+        end
+
         hash[tag] = value
       end
 

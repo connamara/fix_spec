@@ -7,8 +7,10 @@ module FIXSpec
         @json_matcher = JsonSpec::Matchers::HaveJsonPath.new path
       end
 
-      def matches? fix
-        @json_matcher.matches? fix
+      def matches? fix_message
+        fix_json =  FIXSpec::Helpers.message_to_unordered_json(fix_message)
+
+        @json_matcher.matches? fix_json
       end
 
       def failure_message_for_should

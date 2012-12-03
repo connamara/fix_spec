@@ -1,36 +1,45 @@
-require 'json_spec/messages'
-
 module FIXSpec
   module Matchers
     class BeFIXEql
-      include JsonSpec::Messages
+      include FIXSpec::Helpers
 
-      attr_reader :actual
+      def initialize(expected_fix_as_json = nil)
+        @json_matcher= JsonSpec::Matchers::BeJsonEql.new expected_fix_as_json
+      end
 
-      def initialize(expected_json = nil)
-        @json_matcher= JsonSpec::Matchers::BeJsonEql.new expected_json
+      def diffable?
+        @json_matcher.diffable?
+      end
+
+      def actual
+        @json_matcher.actual
+      end
+
+      def expected
+        @json_matcher.expected
       end
 
       def at_path(path)
-        @path=path
         @json_matcher.at_path path
         self
       end
 
-      def matches?(fix)
-        @json_matcher.matches? fix
+      def matches?(fix_message)
+        fix_json =  message_to_unordered_json(fix_message)
+
+       @json_matcher.matches? fix_json
       end
 
       def failure_message_for_should
-        message_with_path("Expected equivalent FIX")
+        @json_matcher.message_with_path("Expected equivalent FIX")
       end
 
       def negative_failure_message
-        message_with_path("Expected inequivalent FIX")
+        @json_matcher.message_with_path("Expected inequivalent FIX")
       end
 
       def description
-        message_with_path("equal FIX")
+        @json_matcher.message_with_path("equal FIX")
       end
     end
   end

@@ -43,10 +43,25 @@ And the fix message at tag "49" should be:
 "ITG"
 """
 And the FIX at "49" should not be "blah"
+
+#everything is a string w/o a data dictionary
 And the FIX at tag "205" should be "4"
 
+@with_data_dictionary
+Scenario: String with data dictionary
+Then the FIX at "SenderCompID" should be "ITG"
+
+And the fix message at tag "SenderCompID" should be:
+"""
+"ITG"
+"""
+And the FIX at "SenderCompID" should not be "blah"
+
+@with_data_dictionary
+Scenario: DayOfMonth with data dictionary
+And the FIX at tag "MaturityDay" should be 4
 
 Scenario: Table format
 Then the fix should have the following:
-| 8   | "FIX.4.2" |
 | 35  | "8"       |
+| 8   | "FIX.4.2" |
