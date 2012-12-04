@@ -3,15 +3,13 @@ Feature: Equivalence with data dictionary
 
 When configured with a data dictionary,  cucumber steps can accept richer, type specific fix parameters and values
 
-Background:
+Scenario: All these checks are acceptable
 Given the following fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """
 When I get the fix message
 
-
-Scenario: All these checks are acceptable
 Then the FIX at "SenderCompID" should be "ITG"
 Then the fix at tag "SenderCompID" should be "ITG"
 Then the fix message at "SenderCompID" should be "ITG"
@@ -26,7 +24,83 @@ And the fix message at tag "SenderCompID" should not be:
 "NOT ITG"
 """
 
+Scenario: Identical Fix as JSON
+Given the following fix message: 
+"""
+8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+When I get the fix message
+
+Then the FIX message should be:
+"""
+{
+  "BeginString":"FIX.4.2",
+  "BodyLength":81,
+  "MsgType":"ExecutionReport",
+  "SenderCompID":"ITG",
+  "TargetCompID":"SILO",
+  "MaturityDay":4,
+  "DayOrderQty": 23.45,
+  "ExchangeForPhysical": true,
+  "AvgPx": 100.25,
+  "OrdType": "MARKET",
+  "PossDupFlag": false,
+  "AdvTransType": "NEW",
+  "UnderlyingPutOrCall": 8,
+  "WtAverageLiquidity": 50.25,
+  "CheckSum":"083"
+}
+"""
+
+@ignore_length_and_checksum
+Scenario: Identical Fix as JSON, ignoring length and checksum
+Given the following fix message: 
+"""
+8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+When I get the fix message
+
+
+Then the FIX message should be:
+"""
+{
+  "BeginString":"FIX.4.2",
+  "MsgType":"ExecutionReport",
+  "SenderCompID":"ITG",
+  "TargetCompID":"SILO",
+  "MaturityDay":4,
+  "DayOrderQty": 23.45,
+  "ExchangeForPhysical": true,
+  "AvgPx": 100.25,
+  "OrdType": "MARKET",
+  "PossDupFlag": false,
+  "AdvTransType": "NEW",
+  "UnderlyingPutOrCall": 8,
+  "WtAverageLiquidity": 50.25
+}
+"""
+
+Scenario: Identical Fix as raw FIX. 
+Given the following fix message: 
+"""
+8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+When I get the fix message
+
+
+Then the FIX message should be:
+"""
+8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+
 Scenario Outline: Types values are type specific
+Given the following fix message: 
+"""
+8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+When I get the fix message
+
+
 Then the FIX at tag "<TAG>" should be <VALUE>
 
 Examples: Enumerations
@@ -39,7 +113,7 @@ Examples: MsgType -doesn't map to DD description
 
 Examples: STRING
 | TAG                 | VALUE |
-| SenderCompID  | "ITG" |
+| SenderCompID        | "ITG" |
 
 Examples: INT
 | TAG                 | VALUE |
@@ -77,6 +151,13 @@ Examples: BOOLEAN
 
 
 Scenario: Table Format
+Given the following fix message: 
+"""
+8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+When I get the fix message
+
+
 Then the fix should have the following:
 | SenderCompID          | "ITG"     |
 | BeginString           | "FIX.4.2" |
