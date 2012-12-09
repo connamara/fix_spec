@@ -3,10 +3,25 @@ fix_spec
 
 Build and Inspect FIX Messages
 
-
 ### DataDictionary
+
+FIXSpec works best when a DataDictionary is provided.  With a DataDictionary loaded, you can inspect a message with named tags, enumeration, and type specific tag values.
+
+The DataDictionary is globally set:
+
+```ruby
+FIXSpec::data_dictionary = quickfix.DataDictionary.new "config/FIX42.xml"
+```
+
 ### Exclusion
 
+When checking for fix message equality, you may wish to ignore some common fields that are mostly session level.  For example, at an application level, BodyLength and CheckSum can be assumed to be set correctly. Tag exclusion is configured globally via JsonSpec:
+
+```ruby
+JsonSpec.configure do
+  exclude_keys "BodyLength", "CheckSum", "MsgSeqNum"
+end
+```
 
 Cucumber
 --------
