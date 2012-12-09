@@ -15,11 +15,11 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "fix_spec"
-  gem.homepage = "http://github.com/cbusbey/fix_spec"
-  gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "chris.busbey@gmail.com"
+  gem.homepage = "http://github.com/connamara/fix_spec"
+  gem.license = "Connamara"
+  gem.summary = %Q{Build and Inspect FIX Messages}
+  gem.description = %Q{Build and Inspect FIX Messages with spec and cucumber steps}
+  gem.email = "support@connamara.com"
   gem.authors = ["Chris Busbey"]
   # dependencies defined in Gemfile
 end
@@ -30,24 +30,7 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-end
-
 task :default => :spec
-
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "fix_spec #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
 
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new do |t|

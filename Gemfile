@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
 gem "json_spec", "~> 1.1.0"
+gem "quickfix"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
