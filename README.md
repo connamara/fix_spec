@@ -4,6 +4,10 @@ fix_spec
 Build and Inspect FIX Messages
 
 
+### DataDictionary
+### Exclusion
+
+
 Cucumber
 --------
 
@@ -37,8 +41,6 @@ Background:
 Given some order message
 
 Scenario: A Market Order is valid
-
-
 Then the FIX message type should be "NewOrderSingle"
 Then the FIX should have tag "OrderQty"
 And the FIX message should not have tag "Price"
@@ -70,7 +72,33 @@ And the FIX message should be:
 """
 ```
 
-The background step isn't provided by fix_spec.  The remaining steps fix_spec provides. See [features](features/) for more examples.
+The background step isn't provided by fix_spec.  The remaining steps fix_spec provides. See `features/` for more examples.
+
+
+### Building FIX Messages
+
+In order to use the Cucumber steps for building FIX messages, in your `env.rb` you must:
+
+```ruby
+require "fix_spec/builder"
+```
+Now you can use fix_spec builder steps in your features:
+
+```cucumber
+Feature: Order Adapter accepts Orders
+
+Scenario: It accepts Market Orders
+
+Given I create a FIX.4.2 message of type "NewOrderSingle" 
+And I set the FIX message at "SenderCompID" to "MY_SENDER"
+And I set the FIX message at "TargetCompID" to "MY_TARGET"
+And I set the FIX message at "OrdType" to "MARKET"
+And I set the FIX message at "OrderQty" to 123
+Then I send the message
+```
+
+The built FIX message can be accessed through the `message` function in the ```FIXSpec::Builder``` module.
+
 
 Setup
 -----
