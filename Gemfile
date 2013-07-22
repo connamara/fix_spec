@@ -1,4 +1,5 @@
 source "http://rubygems.org"
+source "http://gem.connamara.com/"
 
 gem "json_spec", "~> 1.1.0"
 gem "quickfix"

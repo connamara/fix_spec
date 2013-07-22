@@ -1,5 +1,6 @@
 GEM
   remote: http://rubygems.org/
+  remote: http://gem.connamara.com/
   specs:
     builder (3.0.0)
     cucumber (1.2.1)

@@ -8,7 +8,7 @@ def last_fix
 end
 
 Around('@with_data_dictionary') do |scenario, block|
-  FIXSpec::data_dictionary= quickfix.DataDictionary.new "/Users/chris/QFJ_RELEASE_1_5_2/core/src/main/resources/FIX42.xml"
+  FIXSpec::data_dictionary= quickfix.DataDictionary.new "features/support/FIX42.xml"
   block.call
   FIXSpec::data_dictionary= nil
 end
