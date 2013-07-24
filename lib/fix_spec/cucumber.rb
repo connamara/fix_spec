@@ -1,4 +1,5 @@
 require File.expand_path("../../fix_spec", __FILE__)
+require 'cuke_mem'
 
 World(JsonSpec::Helpers, JsonSpec::Matchers)
 World(FIXSpec::Matchers)
@@ -18,9 +19,17 @@ end
 
 Then /^the (?:fix|FIX)(?: message)? at(?: tag)? "(.*?)" should( not)? be (".*"|\-?\d+(?:\.\d+)?(?:[eE][\+\-]?\d+)?|\[.*\]|%?\{.*\}|true|false|null)$/ do |tag, negative, exp_value|
   if negative
-    last_fix.should_not be_fix_eql(exp_value).at_path(tag)
+    last_fix.should_not be_fix_eql(CukeMem.remember(exp_value)).at_path(tag)
   else
-    last_fix.should be_fix_eql(exp_value).at_path(tag)
+    last_fix.should be_fix_eql(CukeMem.remember(exp_value)).at_path(tag)
+  end
+end
+
+Then /^the (?:fix|FIX)(?: message)? should( not)? be (".*"|\-?\d+(?:\.\d+)?(?:[eE][\+\-]?\d+)?|\[.*\]|%?\{.*\}|true|false|null)$/ do |negative, exp_value|
+  if negative
+    last_fix.should_not be_fix_eql(CukeMem.remember(exp_value))
+  else
+    last_fix.should be_fix_eql(CukeMem.remember(exp_value))
   end
 end
 
@@ -35,9 +44,9 @@ Then /^the (?:fix|FIX)(?: message)?(?: at(?: tag)? "(.*?)")? should( not)? be:$/
   end
 
   if negative
-    last_fix.should_not be_fix_eql(exp_value).at_path(tag)
+    last_fix.should_not be_fix_eql(CukeMem.remember(exp_value)).at_path(tag)
   else
-    last_fix.should be_fix_eql(exp_value).at_path(tag)
+    last_fix.should be_fix_eql(CukeMem.remember(exp_value)).at_path(tag)
   end
 end
 
@@ -59,4 +68,11 @@ Then /^the (?:fix|FIX)(?: message)? should( not)? have(?: tag)? "(.*)"$/ do |neg
   else
     last_fix.should have_fix_path(path)
   end
+end
+
+When /^(?:I )?keep the (?:fix|FIX)(?: message)?(?: at "(.*)")? as "(.*)"$/ do |path, key|
+  p path
+  p key
+  p last_fix
+  CukeMem.memorize(key, last_fix)
 end
