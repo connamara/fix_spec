@@ -14,7 +14,7 @@ end
 
 Given /^the following fix message:$/ do |fix_str|
   factory = quickfix.DefaultMessageFactory.new
-  FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(fix_str) )
+  FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, FIXSpec::data_dictionary, FIXSpec::Helpers.fixify_string(fix_str) )
   FIXSpec::Builder.message.should_not be_nil
 end
 
