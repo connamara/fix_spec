@@ -87,6 +87,8 @@ Then the fix message should be:
   "PossDupFlag": false
 }
 """
+
+
 Scenario: Building a message of some type and version
 
 Given I create a FIX.4.2 message of type "ExecutionReport" 
