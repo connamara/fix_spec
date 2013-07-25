@@ -18,6 +18,14 @@ Then /^the FIX message type should( not)? be "(.*?)"$/ do |negative, msg_type|
 end
 
 Then /^the (?:fix|FIX)(?: message)? at(?: tag)? "(.*?)" should( not)? be (".*"|\-?\d+(?:\.\d+)?(?:[eE][\+\-]?\d+)?|\[.*\]|%?\{.*\}|true|false|null)$/ do |tag, negative, exp_value|
+  # raw fix
+  if tag.nil? and not exp_value.match(/{*}/)
+    require 'fix_spec/builder'
+    factory = quickfix.DefaultMessageFactory.new
+    exp_message = FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(exp_value) )
+    exp_value = FIXSpec::Helpers.message_to_unordered_json(exp_message)
+  end
+  
   if negative
     last_fix.should_not be_fix_eql(CukeMem.remember(exp_value)).at_path(tag)
   else
@@ -34,15 +42,6 @@ Then /^the (?:fix|FIX)(?: message)? should( not)? be (".*"|\-?\d+(?:\.\d+)?(?:[e
 end
 
 Then /^the (?:fix|FIX)(?: message)?(?: at(?: tag)? "(.*?)")? should( not)? be:$/ do |tag, negative, exp_value|
-
-  # raw fix
-  if tag.nil? and not exp_value.match(/{*}/)
-    require 'fix_spec/builder'
-    factory = quickfix.DefaultMessageFactory.new
-    exp_message = FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(exp_value) )
-    exp_value = FIXSpec::Helpers.message_to_unordered_json(exp_message)
-  end
-
   if negative
     last_fix.should_not be_fix_eql(CukeMem.remember(exp_value)).at_path(tag)
   else
@@ -70,9 +69,6 @@ Then /^the (?:fix|FIX)(?: message)? should( not)? have(?: tag)? "(.*)"$/ do |neg
   end
 end
 
-When /^(?:I )?keep the (?:fix|FIX)(?: message)?(?: at "(.*)")? as "(.*)"$/ do |path, key|
-  p path
-  p key
-  p last_fix
-  CukeMem.memorize(key, last_fix)
+When /^(?:I )?keep the (?:fix|FIX)(?: message)?(?: at(?: tag)? "(.*)")? as "(.*)"$/ do |path, key|
+  CukeMem.memorize(key, normalize_json(FIXSpec::Helpers.message_to_unordered_json(last_fix), path))
 end
