@@ -78,4 +78,37 @@ describe FIXSpec::Helpers do
       end
     end
   end
+
+  describe "get-message-type function" do
+    let(:order) {
+      ord = quickfix.fix42.NewOrderSingle.new
+      ord
+    }
+    let(:generic_message) {
+      msg = quickfix.Message.new
+      msg.setString( 8, "FIX.4.2" )
+      msg.setInt( 9, 26 )
+      msg.setString( 49, "ITG" )
+      msg.setString( 56, "SILO" )
+      msg.setInt( 205, 4 )
+      msg.setInt( 10, 84 )
+      msg
+    }
+
+    context "fix message with msgType field set" do
+      let(:msg_type) { extract_message_type( order.get_header ) }
+
+      it "should return the value of the msgType tag" do
+        msg_type.should == "D"
+      end
+    end
+
+    context "fix message from raw string with no message type" do
+      let(:msg_type) { extract_message_type( generic_message.get_header ) }
+
+      it "should not error out and return nil" do
+        msg_type.should == nil
+      end
+    end
+  end
 end
