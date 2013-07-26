@@ -1,7 +1,7 @@
 Feature: Equivalence
 
 Background:
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4
 """

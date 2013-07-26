@@ -26,9 +26,19 @@ module FIXSpec
     end
 
     def message_to_hash msg
-      msg_hash = field_map_to_hash msg.get_header
-      msg_hash.merge! field_map_to_hash msg, FIXSpec::data_dictionary, msg.get_msg_type
+      header = msg.get_header
+      msg_type = extract_message_type header
+      msg_hash = field_map_to_hash header
+      msg_hash.merge! field_map_to_hash msg, FIXSpec::data_dictionary, msg_type
       msg_hash.merge field_map_to_hash msg.get_trailer
+    end
+
+    def extract_message_type msg
+      if msg.is_set_field( quickfix::field::MsgType::FIELD)
+        msg.get_field(quickfix::field::MsgType::FIELD).get_value
+      else
+        nil
+      end
     end
 
     def find_field_type tag, data_dictionaries = []

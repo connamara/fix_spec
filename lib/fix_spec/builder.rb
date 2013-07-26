@@ -12,9 +12,9 @@ module Builder
 end
 end
  
-Given /^the following( validated)? fix message:$/ do |validated,fix_str|
+Given /^the following( unvalidated)? fix message:$/ do |unvalidated,fix_str|
   factory = quickfix.DefaultMessageFactory.new
-  if validated
+  unless unvalidated
     FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, FIXSpec::data_dictionary, FIXSpec::Helpers.fixify_string(fix_str) )
   else
     FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(fix_str) )
