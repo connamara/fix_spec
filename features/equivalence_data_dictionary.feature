@@ -4,7 +4,7 @@ Feature: Equivalence with data dictionary
 When configured with a data dictionary,  cucumber steps can accept richer, type specific fix parameters and values
 
 Scenario: All these checks are acceptable
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """
@@ -25,7 +25,7 @@ And the fix message at tag "SenderCompID" should not be:
 """
 
 Scenario: Identical Fix as JSON
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """
@@ -54,7 +54,7 @@ Then the FIX message should be:
 
 @ignore_length_and_checksum
 Scenario: Identical Fix as JSON, ignoring length and checksum
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """
@@ -81,7 +81,7 @@ Then the FIX message should be:
 """
 
 Scenario: Identical Fix as raw FIX. 
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """
@@ -94,7 +94,7 @@ Then the FIX message should be:
 """
 
 Scenario Outline: Types values are type specific
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """
@@ -151,7 +151,7 @@ Examples: BOOLEAN
 
 
 Scenario: Table Format
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """

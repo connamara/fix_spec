@@ -3,7 +3,7 @@ Feature: Building Fix Messages
 
 @ignore_length_and_checksum
 Scenario: Building via raw fix
-Given the following fix message: 
+Given the following unvalidated fix message: 
 """
 8=FIX.4.235=849=ITG56=SILO205=4315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
 """
@@ -87,6 +87,8 @@ Then the fix message should be:
   "PossDupFlag": false
 }
 """
+
+
 Scenario: Building a message of some type and version
 
 Given I create a FIX.4.2 message of type "ExecutionReport" 

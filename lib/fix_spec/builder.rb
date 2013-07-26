@@ -11,10 +11,15 @@ module Builder
   end
 end
 end
-
-Given /^the following fix message:$/ do |fix_str|
+ 
+Given /^the following( unvalidated)? fix message:$/ do |unvalidated,fix_str|
   factory = quickfix.DefaultMessageFactory.new
-  FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(fix_str) )
+  unless unvalidated
+    FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, FIXSpec::data_dictionary, FIXSpec::Helpers.fixify_string(fix_str) )
+  else
+    FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(fix_str) )
+  end
+
   FIXSpec::Builder.message.should_not be_nil
 end
 
@@ -60,21 +65,28 @@ Given /^I set the (?:FIX|fix) message at(?: tag)? "(.*?)" to (".*"|\-?\d+(?:\.\d
   if !FIXSpec::data_dictionary.nil? 
     tag = FIXSpec::data_dictionary.getFieldTag(fieldName)
     
+    msg = FIXSpec::Builder.message
+
+    if FIXSpec::data_dictionary.is_header_field(tag)
+      msg = msg.get_header
+    elsif FIXSpec::data_dictionary.is_trailer_field(tag)
+      msg = msg.get_trailer
+    end
+
     if tag == -1 then
-      FIXSpec::Builder.message.setString(fieldName, fieldValue)
+      msg.setString(fieldName, fieldValue)
       return
     end
 
     case FIXSpec::data_dictionary.get_field_type_enum(tag).get_name
       when "INT","DAYOFMONTH" then 
-        FIXSpec::Builder.message.setInt(tag, fieldValue.to_i)
+        msg.setInt(tag, fieldValue.to_i)
       when "PRICE","FLOAT","QTY" then 
-        FIXSpec::Builder.message.setDouble(tag, fieldValue.to_f)
+        msg.setDouble(tag, fieldValue.to_f)
       when "BOOLEAN" then 
-        FIXSpec::Builder.message.setBoolean(tag, fieldValue == "true")
+        msg.setBoolean(tag, fieldValue == "true")
       else
-        
-        FIXSpec::Builder.message.setString(tag, fieldValue)
+        msg.setString(tag, fieldValue)
     end
 
   else
