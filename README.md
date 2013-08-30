@@ -35,7 +35,7 @@ def last_fix
 end
 ```
 
-See `features/support/env.rb` and `features/step_definitions/steps.rb` for a very simple implementation.
+See [features/support/env.rb](features/support/env.rb) and [features/step_definitions/steps.rb](features/step_definitions/steps.rb) for a very simple implementation.
 
 Now you can use fix_spec steps in your features:
 
@@ -78,7 +78,7 @@ And the FIX message should be:
 """
 ```
 
-The background step isn't provided by fix_spec.  The remaining steps fix_spec provides. See `features/` for more examples.
+The background step isn't provided by fix_spec.  The remaining steps fix_spec provides. See [features](features/) for more examples.
 
 
 #### Building FIX Messages
@@ -129,7 +129,7 @@ end
 
 ### More
 
-Check out [specs](https://github.com/connamara/fix_spec/blob/master/spec) and [features](https://github.com/connamara/fix_spec/blob/master/features) to see all the ways you can use fix_spec.
+Check out [specs](spec/) and [features](features/) to see all the ways you can use fix_spec.
 
 Install
 -------
@@ -154,7 +154,7 @@ More Information
 Contributing
 ------------
 
-Please see the [contribution guidelines](https://github.com/connamara/fix_spec/blob/master/CONTRIBUTION_GUIDELINES.md).
+Please see the [contribution guidelines](CONTRIBUTION_GUIDELINES.md).
 
 Credits
 -------
@@ -176,6 +176,6 @@ Licensing
 
 fix_spec is Copyright © 2013 Connamara Systems, llc. 
 
-This software is available under the GPL and a commercial license.  Please see the [LICENSE](https://github.com/connamara/fix_spec/blob/master/LICENSE.txt) file for the terms specified by the GPL license.  The commercial license offers more flexible licensing terms compared to the GPL, and includes support services.  [Contact us](mailto:info@connamara.com) for more information on the Connamara commercial license, what it enables, and how you can start commercial development with it.
+This software is available under the GPL and a commercial license.  Please see the [LICENSE](LICENSE.txt) file for the terms specified by the GPL license.  The commercial license offers more flexible licensing terms compared to the GPL, and includes support services.  [Contact us](mailto:info@connamara.com) for more information on the Connamara commercial license, what it enables, and how you can start commercial development with it.
 
-This product includes software developed by quickfixengine.org ([http://www.quickfixengine.org/](http://www.quickfixengine.org/)). Please see the [QuickFIX Software LICENSE](https://github.com/connamara/fix_spec/blob/master/QUICKFIX_LICENSE.txt) for the terms specified by the QuickFIX Software License.
+This product includes software developed by quickfixengine.org ([http://www.quickfixengine.org/](http://www.quickfixengine.org/)). Please see the [QuickFIX Software LICENSE](QUICKFIX_LICENSE.txt) for the terms specified by the QuickFIX Software License.
