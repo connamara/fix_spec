@@ -1,30 +1,21 @@
-fix_spec
-========
+fix\_spec
+=========
 
-Build and Inspect FIX Messages
+RSpec matchers and Cucumber step definitions for testing FIX Messages using [json_spec](https://github.com/collectiveidea/json_spec) and [quickfix-jruby](https://github.com/connamara/quickfix-jruby)
 
-### DataDictionary
+Usage
+-----
 
-FIXSpec works best when a DataDictionary is provided.  With a DataDictionary loaded, you can inspect a message with named tags, enumeration, and type specific tag values.
+### RSpec
 
-The DataDictionary is globally set:
+fix\_spec currently defines two matchers:
 
-```ruby
-FIXSpec::data_dictionary = quickfix.DataDictionary.new "config/FIX42.xml"
-```
+* ```be_fix_eql```
+* ```have_fix_path```
 
-### Exclusion
+The matchers can be used as their counterparts are used in json\_spec
 
-When checking for fix message equality, you may wish to ignore some common fields that are mostly session level.  For example, at an application level, BodyLength and CheckSum can be assumed to be set correctly. Tag exclusion is configured globally via JsonSpec:
-
-```ruby
-JsonSpec.configure do
-  exclude_keys "BodyLength", "CheckSum", "MsgSeqNum"
-end
-```
-
-Cucumber
---------
+### Cucumber
 
 fix_spec provides Cucumber steps that utilize its RSpec matchers.
 
@@ -34,7 +25,7 @@ In order to us ethe Cucumber steps, in your `env.rb` you must:
 require "fix_spec/cucumber"
 ```
 
-### "Should" Assertions
+#### "Should" Assertions
 
 In order to test the contents of a FIX message, you will need to define a `last_fix` method.  This method will be called by fix_spec to grab the FIX message to test. For example, suppose a step aquires a fix message and assigns it to `@my_fix_message`.  In your `env.rb` you could then have
 
@@ -90,7 +81,7 @@ And the FIX message should be:
 The background step isn't provided by fix_spec.  The remaining steps fix_spec provides. See `features/` for more examples.
 
 
-### Building FIX Messages
+#### Building FIX Messages
 
 In order to use the Cucumber steps for building FIX messages, in your `env.rb` you must:
 
@@ -114,14 +105,77 @@ Then I send the message
 
 The built FIX message can be accessed through the `message` function in the ```FIXSpec::Builder``` module.
 
+### Configuration
 
-Setup
------
+#### DataDictionary
 
-    bundle install
+FIXSpec works best when a DataDictionary is provided.  With a DataDictionary loaded, you can inspect a message with named tags, enumeration, and type specific tag values.
 
-Test
-----
+The DataDictionary is globally set:
 
-    bundle exec rspec
-    env JAVA_OPTS=-XX:MaxPermSize=2048m bundle exec rake cucumber
+```ruby
+FIXSpec::data_dictionary = quickfix.DataDictionary.new "config/FIX42.xml"
+```
+
+#### Exclusion
+
+When checking for fix message equality, you may wish to ignore some common fields that are mostly session level.  For example, at an application level, BodyLength and CheckSum can be assumed to be set correctly. Tag exclusion is configured globally via JsonSpec:
+
+```ruby
+JsonSpec.configure do
+  exclude_keys "BodyLength", "CheckSum", "MsgSeqNum"
+end
+```
+
+### More
+
+Check out [specs](https://github.com/connamara/fix_spec/blob/master/spec) and [features](https://github.com/connamara/fix_spec/blob/master/features) to see all the ways you can use fix_spec.
+
+Install
+-------
+
+```shell
+gem install fix_spec
+```
+
+or add the following to Gemfile:
+```ruby
+gem 'fix_spec'
+```
+and run `bundle install` from your shell.
+
+More Information
+----------------
+
+* [Rubygems](https://rubygems.org/gems/fix_spec)
+* [Issues](https://github.com/connamara/fix_spec/issues)
+* [Connamara Systems](http://connamara.com)
+
+Contributing
+------------
+
+Please see the [contribution guidelines](https://github.com/connamara/fix_spec/blob/master/CONTRIBUTION_GUIDELINES.md).
+
+Credits
+-------
+
+Contributers:
+
+* Chris Busbey
+* Matt Lane
+* Ben Gura
+
+![Connamara Systems](http://www.connamara.com/images/home-connamara-logo-lg.png)
+
+fix_spec is maintained and funded by [Connamara Systems, llc](http://connamara.com).
+
+The names and logos for Connamara Systems are trademarks of Connamara Systems, llc.
+
+Licensing
+---------
+
+fix_spec is Copyright © 2013 Connamara Systems, llc. 
+
+This software is available under the GPL and a commercial license.  Please see the [LICENSE](https://github.com/connamara/fix_spec/blob/master/LICENSE.txt) file for the terms specified by the GPL license.  The commercial license offers more flexible licensing terms compared to the GPL, and includes support services.  [Contact us](mailto:info@connamara.com) for more information on the Connamara commercial license, what it enables, and how you can start commercial development with it.
+
+This product includes software developed by quickfixengine.org ([http://www.quickfixengine.org/](http://www.quickfixengine.org/)). Please see the [QuickFIX Software LICENSE](https://github.com/connamara/fix_spec/blob/master/QUICKFIX_LICENSE.txt) for the terms specified by the QuickFIX Software License.
