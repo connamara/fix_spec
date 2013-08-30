@@ -1,4 +1,4 @@
-fix\_spec
+fix\_spec [![Build Status](https://travis-ci.org/connamara/fix_spec.png)](https://travis-ci.org/connamara/fix_spec)
 =========
 
 RSpec matchers and Cucumber step definitions for testing FIX Messages using [json_spec](https://github.com/collectiveidea/json_spec) and [quickfix-jruby](https://github.com/connamara/quickfix-jruby)
