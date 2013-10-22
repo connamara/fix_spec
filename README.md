@@ -114,7 +114,7 @@ FIXSpec works best when a DataDictionary is provided.  With a DataDictionary loa
 The DataDictionary is globally set:
 
 ```ruby
-FIXSpec::data_dictionary = quickfix.DataDictionary.new "config/FIX42.xml"
+FIXSpec::data_dictionary = FIXSpec::DataDictionary.new "config/FIX42.xml"
 ```
 
 #### Exclusion
