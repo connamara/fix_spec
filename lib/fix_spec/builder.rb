@@ -73,11 +73,6 @@ Given /^I set the (?:FIX|fix) message at(?: tag)? "(.*?)" to (".*"|\-?\d+(?:\.\d
       msg = msg.get_trailer
     end
 
-    if tag == -1 then
-      msg.setString(fieldName, fieldValue)
-      return
-    end
-
     case FIXSpec::data_dictionary.get_field_type_enum(tag).get_name
       when "INT","DAYOFMONTH" then 
         msg.setInt(tag, fieldValue.to_i)
@@ -86,6 +81,9 @@ Given /^I set the (?:FIX|fix) message at(?: tag)? "(.*?)" to (".*"|\-?\d+(?:\.\d
       when "BOOLEAN" then 
         msg.setBoolean(tag, fieldValue == "true")
       else
+        #enum description => enum value
+        #e.g. tag 54 "BUY"=>"1"
+        fieldValue = FIXSpec::data_dictionary.get_reverse_value_name(tag, fieldValue)
         msg.setString(tag, fieldValue)
     end
 
