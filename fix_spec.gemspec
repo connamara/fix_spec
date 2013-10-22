@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "fix_spec"
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chris Busbey"]
-  s.date = "2013-08-30"
+  s.date = "2013-10-22"
   s.description = "Build and Inspect FIX Messages with RSpec and Cucumber steps"
   s.email = "info@connamara.com"
   s.extra_rdoc_files = [
@@ -43,10 +43,12 @@ Gem::Specification.new do |s|
     "lib/fix_spec/builder.rb",
     "lib/fix_spec/configuration.rb",
     "lib/fix_spec/cucumber.rb",
+    "lib/fix_spec/data_dictionary.rb",
     "lib/fix_spec/helpers.rb",
     "lib/fix_spec/matchers.rb",
     "lib/fix_spec/matchers/be_fix_eql.rb",
     "lib/fix_spec/matchers/have_fix_path.rb",
+    "spec/data_dictionary_spec.rb",
     "spec/fix_spec/helpers_spec.rb",
     "spec/spec_helper.rb"
   ]
