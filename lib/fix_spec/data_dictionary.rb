@@ -7,7 +7,7 @@ module FIXSpec
 
     def initialize fileName
       super fileName
-      @reverse_lookup = Hash.new({})
+      @reverse_lookup = Hash.new
 
       parse_xml(fileName)
     end
@@ -26,6 +26,7 @@ module FIXSpec
       doc = REXML::Document.new File.new(fileName)
       doc.elements.each("fix/fields/field") do |f| 
         tag = f.attributes['number'].to_i
+        @reverse_lookup[tag]||={}
 
         f.elements.each("value") do |v|
           @reverse_lookup[ tag ][v.attributes['description'] ] = v.attributes['enum']
