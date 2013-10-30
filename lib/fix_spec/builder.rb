@@ -59,10 +59,12 @@ end
 Given(/^I add the following "(.*?)" group:$/) do |grpType, table|
   FIXSpec::Builder.message.should_not be_nil
 
-  # gets the field name for the first entry in the table
-  delim_field = table.raw.first.first
+  list_field_order = []
+  table.raw.each do |fieldName, fieldValue|
+    list_field_order.push(FIXSpec::data_dictionary.getFieldTag(fieldName))
+  end
 
-  group = quickfix.Group.new(FIXSpec::data_dictionary.getFieldTag(grpType), FIXSpec::data_dictionary.getFieldTag(delim_field))
+  group = quickfix.Group.new(FIXSpec::data_dictionary.getFieldTag(grpType), list_field_order.first, (list_field_order.to_java :int))
 
   table.raw.each do |fieldName, fieldValue|
     add_field(group, fieldName, fieldValue)
