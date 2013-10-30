@@ -103,6 +103,31 @@ And I set the FIX message at "OrderQty" to 123
 Then I send the message
 ```
 
+Or it can be simplified using a table:
+
+```cucumber
+Given I create the following FIX.4.2 message of type "NewOrderSingle":
+| SenderCompID | "MY_SENDER" |
+| TargetCompID | "MY_TARGET" |
+| OrdType      | "MARKET"    |
+| OrderQty     | 123         |
+```
+
+You can even do repeating groups:
+
+```cucumber
+Given I create the following FIX.4.2 message of type "NewOrderList":
+| ListID      | "List_ID" |
+And I add the following "NoOrders" group:
+| Symbol   | "ABC" |
+| Side     | "BUY" |
+| OrderQty | 123   |
+And I add the following "NoOrders" group:
+| Symbol   | "ABC"  |
+| Side     | "SELL" |
+| OrderQty | 123    |
+```
+
 The built FIX message can be accessed through the `message` function in the ```FIXSpec::Builder``` module.
 
 ### Configuration
@@ -164,6 +189,7 @@ Contributers:
 * Chris Busbey
 * Matt Lane
 * Ben Gura
+* Brad Haan
 
 ![Connamara Systems](http://www.connamara.com/images/home-connamara-logo-lg.png)
 
