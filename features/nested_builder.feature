@@ -62,7 +62,7 @@ Then the FIX message should be:
 }
 """
 
-@ignore_length_and_checksum
+@wip @ignore_length_and_checksum
 Scenario: Building fix message with repeating group builder
 Given I create the following FIX.4.2 message of type "News":
 | PossDupFlag  | false                                        |
