@@ -118,7 +118,6 @@ You can even do repeating groups:
 ```cucumber
 Given I create the following FIX.4.2 message of type "NewOrderList":
 | ListID      | "List_ID" |
-| NoOrders    | 2         |
 And I add the following "NoOrders" group:
 | Symbol   | "ABC" |
 | Side     | "BUY" |

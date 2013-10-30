@@ -69,7 +69,6 @@ Given I create the following FIX.4.2 message of type "News":
 | SenderCompID | "ITG"                                        |
 | TargetCompID | "SILO"                                       |
 | Headline     | "Market Bulls Have Short Sellers on the Run" |
-| LinesOfText  | 2                                            |
 And I add the following "LinesOfText" group:
 | Text | "The bears have been cowed by the bulls." |
 And I add the following "LinesOfText" group:
