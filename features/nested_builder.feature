@@ -61,3 +61,38 @@ Then the FIX message should be:
   ]
 }
 """
+
+@ignore_length_and_checksum
+Scenario: Building fix message with repeating group builder
+Given I create the following FIX.4.2 message of type "News":
+| PossDupFlag  | false                                        |
+| SenderCompID | "ITG"                                        |
+| TargetCompID | "SILO"                                       |
+| Headline     | "Market Bulls Have Short Sellers on the Run" |
+| LinesOfText  | 2                                            |
+And I add the following "LinesOfText" group:
+| Text | "The bears have been cowed by the bulls." |
+And I add the following "LinesOfText" group:
+| Text           | "Buy buy buy" |
+| EncodedTextLen | 0             |
+When I get the fix message
+Then the FIX message should be:
+"""
+{
+  "BeginString":"FIX.4.2",
+  "MsgType":"News",
+  "PossDupFlag":false,
+  "SenderCompID":"ITG",
+  "TargetCompID":"SILO",
+  "Headline":"Market Bulls Have Short Sellers on the Run",
+  "LinesOfText":[
+    {
+      "Text":"The bears have been cowed by the bulls."
+    },
+    {
+      "Text":"Buy buy buy",
+      "EncodedTextLen":0
+    }
+  ]
+}
+"""

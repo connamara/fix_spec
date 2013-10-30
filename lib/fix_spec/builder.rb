@@ -51,10 +51,27 @@ Given /^I create the following (?:fix|FIX|(.*)) message(?: of type "(.*)")?:$/ d
   end
 end
 
-
-
 Given /^I set the (?:FIX|fix) message at(?: tag)? "(.*?)" to (".*"|\-?\d+(?:\.\d+)?(?:[eE][\+\-]?\d+)?|\[.*\]|%?\{.*\}|true|false|null)$/ do |fieldName, fieldValue|
   FIXSpec::Builder.message.should_not be_nil
+  add_field(FIXSpec::Builder.message, fieldName, fieldValue)
+end
+
+Given(/^I add the following "(.*?)" group:$/) do |grpType, table|
+  FIXSpec::Builder.message.should_not be_nil
+
+  # gets the field name for the first entry in the table
+  delim_field = table.raw.first.first
+
+  group = quickfix.Group.new(FIXSpec::data_dictionary.getFieldTag(grpType), FIXSpec::data_dictionary.getFieldTag(delim_field))
+
+  table.raw.each do |fieldName, fieldValue|
+    add_field(group, fieldName, fieldValue)
+  end
+
+  FIXSpec::Builder.message.addGroup(group)
+end
+
+def add_field msg_part, fieldName, fieldValue
 
   #kill quotes
   if fieldValue.match(/\"(.*)\"/)
@@ -65,33 +82,28 @@ Given /^I set the (?:FIX|fix) message at(?: tag)? "(.*?)" to (".*"|\-?\d+(?:\.\d
   if !FIXSpec::data_dictionary.nil? 
     tag = FIXSpec::data_dictionary.getFieldTag(fieldName)
     
-    msg = FIXSpec::Builder.message
-
     if FIXSpec::data_dictionary.is_header_field(tag)
-      msg = msg.get_header
+      msg_part = msg_part.get_header
     elsif FIXSpec::data_dictionary.is_trailer_field(tag)
-      msg = msg.get_trailer
+      msg_part = msg_part.get_trailer
     end
 
     case FIXSpec::data_dictionary.get_field_type_enum(tag).get_name
       when "INT","DAYOFMONTH" then 
-        msg.setInt(tag, fieldValue.to_i)
+        msg_part.setInt(tag, fieldValue.to_i)
       when "PRICE","FLOAT","QTY" then 
-        msg.setDouble(tag, fieldValue.to_f)
+        msg_part.setDouble(tag, fieldValue.to_f)
       when "BOOLEAN" then 
-        msg.setBoolean(tag, fieldValue == "true")
+        msg_part.setBoolean(tag, fieldValue == "true")
       else
         #enum description => enum value
         #e.g. tag 54 "BUY"=>"1"
         fieldValue = FIXSpec::data_dictionary.get_reverse_value_name(tag, fieldValue)
-        msg.setString(tag, fieldValue)
+        msg_part.setString(tag, fieldValue)
     end
-
   else
     tag = fieldName.to_i
-    FIXSpec::Builder.message.setString(tag, fieldValue)
+    msg_part.setString(tag, fieldValue)
   end
+
 end
-
-
-
