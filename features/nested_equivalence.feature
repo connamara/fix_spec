@@ -1,5 +1,5 @@
 @with_data_dictionary
-Feature: Matching a Fix Messages with repeating groups
+Feature: Matching Fix Messages with repeating groups
 
 Scenario: Matching a fix message with repeating groups
 Given I create the following FIX.4.2 message of type "News":
