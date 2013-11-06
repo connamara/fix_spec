@@ -71,6 +71,19 @@ Then /^the (?:fix|FIX)(?: message)? should( not)? have(?: tag)? "(.*)"$/ do |neg
   end
 end
 
+Then(/^the (?:fix|FIX)(?: message) should( not)? have the following "(.*?)" repeating group:$/) do |negative, path, table|
+  expected = table.hashes
+  expected.each_index do |index|
+    expected[index].each_pair do |key, value|
+      if value
+        steps %{And the FIX at "#{path}/#{index}/#{key}" should#{negative ? " not" : ''} be #{value}}
+      else
+        steps %{And the FIX should#{negative ? " not" : ''} have "#{path}/#{index}/#{key}"}
+      end
+    end
+  end
+end
+
 When /^(?:I )?keep the (?:fix|FIX)(?: message)?(?: at(?: tag)? "(.*)")? as "(.*)"$/ do |path, key|
   CukeMem.memorize(key, normalize_json(FIXSpec::Helpers.message_to_unordered_json(last_fix), path))
 end
