@@ -53,7 +53,7 @@ end
 
 Given /^I set the (?:FIX|fix) message at(?: tag)? "(.*?)" to (".*"|\-?\d+(?:\.\d+)?(?:[eE][\+\-]?\d+)?|\[.*\]|%?\{.*\}|true|false|null)$/ do |fieldName, fieldValue|
   FIXSpec::Builder.message.should_not be_nil
-  add_field(FIXSpec::Builder.message, fieldName, fieldValue)
+  set_fields(FIXSpec::Builder.message, fieldName.split('/'), fieldValue)
 end
 
 Given(/^I add the following "(.*?)" group:$/) do |grpType, table|
@@ -73,7 +73,42 @@ Given(/^I add the following "(.*?)" group:$/) do |grpType, table|
   FIXSpec::Builder.message.addGroup(group)
 end
 
-def add_field msg_part, fieldName, fieldValue
+def set_fields msgPart, fieldName, fieldValue
+  if fieldName.is_a? String
+    add_field msgPart, fieldName, fieldValue
+  elsif fieldName.is_a? Array
+    if fieldName.length > 1
+      add_array_field msgPart, fieldName, fieldValue
+    else
+      add_field msgPart, fieldName.first, fieldValue
+    end
+  end
+end
+
+def add_array_field msgPart, fieldArray, fieldValue
+  if !FIXSpec::data_dictionary.nil?
+    fieldName = fieldArray.shift
+    tag = FIXSpec::data_dictionary.getFieldTag(fieldName)
+    fail "#{fieldName} is not a valid field" if tag == -1
+
+    arrayPosStr = fieldArray.shift
+    arrayPos = arrayPosStr.to_i
+    fail "#{arrayPos} is not a valid array index" unless arrayPos.to_s == arrayPosStr
+    fail "You need to specify a field for group #{fieldName}" if fieldArray.empty?
+
+    if msgPart.hasGroup(arrayPos+1, tag)
+      set_fields msgPart.getGroup(arrayPos+1, tag), fieldArray, fieldValue
+    else
+      group = quickfix.Group.new tag, -1
+      set_fields group, fieldArray, fieldValue
+      msgPart.addGroup group
+    end
+  else
+    fail "no data dictionary set"
+  end
+end
+
+def add_field msgPart, fieldName, fieldValue
 
   #kill quotes
   if fieldValue.match(/\"(.*)\"/)
@@ -83,29 +118,28 @@ def add_field msg_part, fieldName, fieldValue
   tag = -1
   if !FIXSpec::data_dictionary.nil? 
     tag = FIXSpec::data_dictionary.getFieldTag(fieldName)
-    
     if FIXSpec::data_dictionary.is_header_field(tag)
-      msg_part = msg_part.get_header
+      msgPart = msgPart.get_header
     elsif FIXSpec::data_dictionary.is_trailer_field(tag)
-      msg_part = msg_part.get_trailer
+      msgPart = msgPart.get_trailer
     end
 
     case FIXSpec::data_dictionary.get_field_type_enum(tag).get_name
       when "INT","DAYOFMONTH" then 
-        msg_part.setInt(tag, fieldValue.to_i)
+        msgPart.setInt(tag, fieldValue.to_i)
       when "PRICE","FLOAT","QTY" then 
-        msg_part.setDouble(tag, fieldValue.to_f)
+        msgPart.setDouble(tag, fieldValue.to_f)
       when "BOOLEAN" then 
-        msg_part.setBoolean(tag, fieldValue == "true")
+        msgPart.setBoolean(tag, fieldValue == "true")
       else
         #enum description => enum value
         #e.g. tag 54 "BUY"=>"1"
         fieldValue = FIXSpec::data_dictionary.get_reverse_value_name(tag, fieldValue)
-        msg_part.setString(tag, fieldValue)
+        msgPart.setString(tag, fieldValue)
     end
   else
     tag = fieldName.to_i
-    msg_part.setString(tag, fieldValue)
+    msgPart.setString(tag, fieldValue)
   end
 
 end
