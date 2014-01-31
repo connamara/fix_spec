@@ -95,3 +95,51 @@ Then the FIX message should be:
   ]
 }
 """
+
+@ignore_length_and_checksum
+Scenario: Building fix message with multi nested repeating groups
+Given I create a FIX.4.2 message of type "MassQuote"
+And I set the FIX message at "SenderCompID" to "ITG"
+And I set the FIX message at "TargetCompID" to "SILO"
+And I set the FIX message at "NoQuoteSets/0/TotQuoteEntries" to "2"
+And I set the FIX message at "NoQuoteSets/0/NoQuoteEntries/0/Symbol" to "TSLA"
+And I set the FIX message at "NoQuoteSets/0/NoQuoteEntries/1/Symbol" to "IBM"
+And I set the FIX message at "NoQuoteSets/1/TotQuoteEntries" to "2"
+And I set the FIX message at "NoQuoteSets/1/NoQuoteEntries/0/Symbol" to "GOOG"
+And I set the FIX message at "NoQuoteSets/1/NoQuoteEntries/1/Symbol" to "APPL"
+
+When I get the fix message
+
+Then the FIX message should be:
+"""
+{
+  "BeginString":"FIX.4.2",
+  "MsgType":"MassQuote",
+  "SenderCompID":"ITG",
+  "TargetCompID":"SILO",
+  "NoQuoteSets":[
+    {
+      "TotQuoteEntries":2,
+      "NoQuoteEntries":[
+        {
+        "Symbol":"TSLA"
+        },
+        {
+        "Symbol":"IBM"
+        }
+      ]
+    },
+    {
+      "TotQuoteEntries":2,
+      "NoQuoteEntries":[
+        {
+        "Symbol":"GOOG"
+        },
+        {
+        "Symbol":"APPL"
+        }
+      ]
+    }
+  ]
+}
+"""
