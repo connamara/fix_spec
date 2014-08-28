@@ -23,7 +23,7 @@ Given /^the following( unvalidated)? fix message:$/ do |unvalidated,fix_str|
   FIXSpec::Builder.message.should_not be_nil
 end
 
-Given /^I create a (?:fix|FIX|(.*)) message(?: of type "(.*)")?$/ do |begin_string, msg_type|
+Given /^I create a (?:fix|FIX|(FIX\.\d+\.\d+)) message(?: of type "(.*)")?$/ do |begin_string, msg_type|
   FIXSpec::Builder.message = quickfix.Message.new
 
   unless begin_string.nil?
@@ -35,7 +35,7 @@ Given /^I create a (?:fix|FIX|(.*)) message(?: of type "(.*)")?$/ do |begin_stri
   end
 end
 
-Given /^I create the following (?:fix|FIX|(.*)) message(?: of type "(.*)")?:$/ do |begin_string, msg_type, table|
+Given /^I create the following (?:fix|FIX|(FIX\.\d+\.\d+)) message(?: of type "(.*)")?:$/ do |begin_string, msg_type, table|
   FIXSpec::Builder.message = quickfix.Message.new
 
   unless begin_string.nil?
