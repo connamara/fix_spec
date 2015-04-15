@@ -186,10 +186,11 @@ Credits
 
 Contributers:
 
-* Chris Busbey
+* [Chris Busbey](https://github.com/cbusbey)
 * Matt Lane
 * Ben Gura
 * Brad Haan
+* [Mike Gatny](https://github.com/mgatny)
 
 ![Connamara Systems](http://www.connamara.com/images/home-connamara-logo-lg.png)
 
