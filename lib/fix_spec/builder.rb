@@ -9,21 +9,35 @@ module Builder
   def self.message= msg
     @message=msg
   end
+
+  # Converts a FIX message string into a +quickfix.Message+.
+  #
+  # Params:
+  # +msg_string+:: the FIX message string
+  # +do_validation+:: if true, validation is performed using the DataDictionary
+  #
+  # Returns:
+  # +quickfix.Message+
+  #
+  # See also:
+  # +quickfix.MessageUtils#parse(Session, String)+
+  def self.parse_message msg_string, do_validation
+    begin_string = quickfix.MessageUtils.getStringField(msg_string, quickfix.field.BeginString::FIELD)
+    msg_type = quickfix.MessageUtils.getMessageType(msg_string)
+    payload_dict = quickfix.MessageUtils.isAdminMessage(msg_type) ? FIXSpec::session_data_dictionary : FIXSpec::application_data_dictionary
+    msg = quickfix.DefaultMessageFactory.new.create(begin_string, msg_type)
+    msg.parse(msg_string, FIXSpec::session_data_dictionary, payload_dict, do_validation)
+    msg
+  end
 end
 end
  
 Given /^the following( unvalidated)? fix message:$/ do |unvalidated,fix_str|
-  factory = quickfix.DefaultMessageFactory.new
-  unless unvalidated
-    FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, FIXSpec::data_dictionary, FIXSpec::Helpers.fixify_string(fix_str) )
-  else
-    FIXSpec::Builder.message = quickfix.MessageUtils.parse(factory, nil, FIXSpec::Helpers.fixify_string(fix_str) )
-  end
-
+  FIXSpec::Builder.message = FIXSpec::Builder.parse_message(FIXSpec::Helpers.fixify_string(fix_str), !unvalidated)
   FIXSpec::Builder.message.should_not be_nil
 end
 
-Given /^I create a (?:fix|FIX|(FIX\.\d+\.\d+)) message(?: of type "(.*)")?$/ do |begin_string, msg_type|
+Given /^I create a (?:fix|FIX|(FIXT?\.\d+\.\d+)) message(?: of type "(.*)")?$/ do |begin_string, msg_type|
   FIXSpec::Builder.message = quickfix.Message.new
 
   unless begin_string.nil?
@@ -35,7 +49,7 @@ Given /^I create a (?:fix|FIX|(FIX\.\d+\.\d+)) message(?: of type "(.*)")?$/ do 
   end
 end
 
-Given /^I create the following (?:fix|FIX|(FIX\.\d+\.\d+)) message(?: of type "(.*)")?:$/ do |begin_string, msg_type, table|
+Given /^I create the following (?:fix|FIX|(FIXT?\.\d+\.\d+)) message(?: of type "(.*)")?:$/ do |begin_string, msg_type, table|
   FIXSpec::Builder.message = quickfix.Message.new
 
   unless begin_string.nil?
@@ -118,9 +132,9 @@ def add_field msgPart, fieldName, fieldValue
   tag = -1
   if !FIXSpec::data_dictionary.nil? 
     tag = FIXSpec::data_dictionary.getFieldTag(fieldName)
-    if FIXSpec::data_dictionary.is_header_field(tag)
+    if FIXSpec::session_data_dictionary.is_header_field(tag)
       msgPart = msgPart.get_header
-    elsif FIXSpec::data_dictionary.is_trailer_field(tag)
+    elsif FIXSpec::session_data_dictionary.is_trailer_field(tag)
       msgPart = msgPart.get_trailer
     end
 

@@ -13,6 +13,14 @@ Around('@with_data_dictionary') do |scenario, block|
   FIXSpec::data_dictionary= nil
 end
 
+Around('@with_data_dictionary', '@fix50') do |scenario, block|
+  FIXSpec::application_data_dictionary = FIXSpec::DataDictionary.new "features/support/FIX50SP1.xml"
+  FIXSpec::session_data_dictionary = FIXSpec::DataDictionary.new "features/support/FIXT11.xml"
+  block.call
+  FIXSpec::application_data_dictionary = nil
+  FIXSpec::session_data_dictionary = nil
+end
+
 Around('@ignore_length_and_checksum') do |scenario, block|
   JsonSpec.excluded_keys=%w(CheckSum BodyLength)
   block.call

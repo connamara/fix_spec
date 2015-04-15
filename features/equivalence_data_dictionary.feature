@@ -24,6 +24,39 @@ And the fix message at tag "SenderCompID" should not be:
 "NOT ITG"
 """
 
+@fix50
+Scenario: All these checks are acceptable (FIXT/FIX50)
+Given the following unvalidated fix message: 
+"""
+8=FIXT.1.135=849=ITG56=SILO315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+When I get the fix message
+
+Then the FIX at "SenderCompID" should be "ITG"
+Then the fix at tag "SenderCompID" should be "ITG"
+Then the fix message at "SenderCompID" should be "ITG"
+And the FIX at "SenderCompID" should not be "blah"
+And the fix message at tag "SenderCompID" should be:
+    """
+    "ITG"
+    """
+And the fix message at tag "SenderCompID" should not be:
+    """
+    "NOT ITG"
+    """
+Then the FIX at "OrdType" should be "MARKET"
+Then the fix at tag "OrdType" should be "MARKET"
+Then the fix message at "OrdType" should be "MARKET"
+And the FIX at "OrdType" should not be "STOP_LIMIT"
+And the fix message at tag "OrdType" should be:
+    """
+    "MARKET"
+    """
+And the fix message at tag "OrdType" should not be:
+    """
+    "STOP_LIMIT"
+    """
+
 Scenario: Identical Fix as JSON
 Given the following unvalidated fix message: 
 """
@@ -157,10 +190,25 @@ Given the following unvalidated fix message:
 """
 When I get the fix message
 
-
 Then the fix should have the following:
 | SenderCompID          | "ITG"     |
 | BeginString           | "FIX.4.2" |
 | MaturityDay           | 4         |
 | UnderlyingPutOrCall   | 8         |
 | AvgPx                 | 100.25    |
+
+
+@fix50
+Scenario: Table Format (using FIXT/FIX50)
+Given the following unvalidated fix message: 
+"""
+8=FIXT.1.135=849=ITG56=SILO315=86=100.25410=50.25424=23.45411=Y43=N40=15=N
+"""
+When I get the fix message
+
+Then the fix should have the following:
+| SenderCompID          | "ITG"      |
+| BeginString           | "FIXT.1.1" |
+| UnderlyingPutOrCall   | 8          |
+| AvgPx                 | 100.25     |
+
