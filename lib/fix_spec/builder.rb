@@ -38,28 +38,11 @@ Given /^the following( unvalidated)? fix message:$/ do |unvalidated,fix_str|
 end
 
 Given /^I create a (?:fix|FIX|(FIXT?\.\d+\.\d+)) message(?: of type "(.*)")?$/ do |begin_string, msg_type|
-  FIXSpec::Builder.message = quickfix.Message.new
-
-  unless begin_string.nil?
-    steps %{And I set the FIX message at "BeginString" to "#{begin_string}"}
-  end
-
-  unless msg_type.nil?
-    steps %{And I set the FIX message at "MsgType" to "#{msg_type}"}
-  end
+  FIXSpec::Builder.message = new_message(msg_type, begin_string)
 end
 
 Given /^I create the following (?:fix|FIX|(FIXT?\.\d+\.\d+)) message(?: of type "(.*)")?:$/ do |begin_string, msg_type, table|
-  FIXSpec::Builder.message = quickfix.Message.new
-
-  unless begin_string.nil?
-    steps %{And I set the FIX message at "BeginString" to "#{begin_string}"}
-  end
-
-  unless msg_type.nil?
-    steps %{And I set the FIX message at "MsgType" to "#{msg_type}"}
-  end
-
+  FIXSpec::Builder.message = new_message(msg_type, begin_string)
   table.raw.each do |tag, value|
     steps %{And I set the FIX message at "#{tag}" to #{value}}
   end
@@ -113,7 +96,7 @@ def add_array_field msgPart, fieldArray, fieldValue
     if msgPart.hasGroup(arrayPos+1, tag)
       set_fields msgPart.getGroup(arrayPos+1, tag), fieldArray, fieldValue
     else
-      group = quickfix.Group.new tag, -1
+      group = new_group(msgPart, fieldName)
       set_fields group, fieldArray, fieldValue
       msgPart.addGroup group
     end
@@ -123,7 +106,6 @@ def add_array_field msgPart, fieldArray, fieldValue
 end
 
 def add_field msgPart, fieldName, fieldValue
-
   #kill quotes
   if fieldValue.match(/\"(.*)\"/)
     fieldValue=$1
@@ -155,5 +137,37 @@ def add_field msgPart, fieldName, fieldValue
     tag = fieldName.to_i
     msgPart.setString(tag, fieldValue)
   end
-
 end
+
+
+# Tries to create a typed Message using a DefaultMessageFactory based on the given +msg_type+.
+#
+# This ensures that any repeating groups that are added to the Message will also be typed, and
+# therefore have the correct delimiter and field order.
+# Falls back to creating a base Message if +msg_type+ is nil.
+def new_message msg_type=nil, begin_string=nil
+  if msg_type.nil?
+    msg = quickfix.Message.new
+    msg.get_header.setString(8, begin_string) unless begin_string.nil?
+    msg
+  else
+    quickfix.DefaultMessageFactory.new.create(FIXSpec::session_data_dictionary.get_version, FIXSpec::data_dictionary.get_reverse_value_name(35, msg_type))
+  end
+end
+
+# Tries to create a typed Group based on the name of the parent Message.
+#
+# This ensures that the correct delimiter and field order is used when serializing/deserializing the Group.
+# Falls back to creating a base Group if typed Group creation fails.
+#
+# Example:
+#   If +msgPart+ is an instance of +Java::quickfix.fix50.MarketDataRequest+
+#   And +fieldName+ is 'NoMDEntryTypes'
+#   Then an instance of +Java::quickfix.fix50.MarketDataRequest::NoMDEntryTypes+ will be returned.
+def new_group msgPart, fieldName
+  group_class = java_import("#{msgPart.getClass.getName}\$#{fieldName}").first
+  group_class.new
+rescue
+  quickfix.Group.new FIXSpec::data_dictionary.getFieldTag(fieldName), -1
+end
+
