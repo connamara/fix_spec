@@ -9,17 +9,17 @@ def last_fix
 end
 
 Around('@with_data_dictionary') do |scenario, block|
-  FIXSpec::data_dictionary = FIXSpec::DataDictionary.new "features/support/FIX42.xml"
+  FIXSpec.data_dictionary = FIXSpec::DataDictionary.new "features/support/FIX42.xml"
   block.call
-  FIXSpec::data_dictionary = nil
+  FIXSpec.data_dictionary = nil
 end
 
 Around('@with_data_dictionary', '@fix50') do |scenario, block|
-  FIXSpec::application_data_dictionary = FIXSpec::DataDictionary.new "features/support/FIX50SP1.xml"
-  FIXSpec::session_data_dictionary = FIXSpec::DataDictionary.new "features/support/FIXT11.xml"
+  FIXSpec.application_data_dictionary = FIXSpec::DataDictionary.new "features/support/FIX50SP1.xml"
+  FIXSpec.session_data_dictionary = FIXSpec::DataDictionary.new "features/support/FIXT11.xml"
   block.call
-  FIXSpec::application_data_dictionary = nil
-  FIXSpec::session_data_dictionary = nil
+  FIXSpec.application_data_dictionary = nil
+  FIXSpec.session_data_dictionary = nil
 end
 
 Around('@ignore_length_and_checksum') do |scenario, block|
