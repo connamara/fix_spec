@@ -72,6 +72,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.8"])
       s.add_development_dependency(%q<cucumber>, ["~> 1.3"])
       s.add_development_dependency(%q<rake>, ["~> 10.1"])
+      s.add_development_dependency(%q<pry>)
     else
       s.add_dependency(%q<json_spec>, ["~> 1.1.1"])
       s.add_dependency(%q<quickfix-jruby>, ["~> 1.6.0"])
