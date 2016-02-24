@@ -1,16 +1,17 @@
 $: << File.expand_path("../../../lib", __FILE__)
 
+require "pry"
+require "fix_spec"
 require "fix_spec/cucumber"
-require "fix_spec/builder"
 
 def last_fix
   @last_fix
 end
 
 Around('@with_data_dictionary') do |scenario, block|
-  FIXSpec::data_dictionary= FIXSpec::DataDictionary.new "features/support/FIX42.xml"
+  FIXSpec::data_dictionary = FIXSpec::DataDictionary.new "features/support/FIX42.xml"
   block.call
-  FIXSpec::data_dictionary= nil
+  FIXSpec::data_dictionary = nil
 end
 
 Around('@with_data_dictionary', '@fix50') do |scenario, block|

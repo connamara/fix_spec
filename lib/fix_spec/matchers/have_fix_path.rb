@@ -2,6 +2,7 @@ module FIXSpec
   module Matchers
     class HaveFIXPath
       attr_reader :path
+
       def initialize path
         @path = path
         @json_matcher = JsonSpec::Matchers::HaveJsonPath.new path

@@ -12,7 +12,3 @@ module FIXSpec
     end
   end
 end
-
-RSpec.configure do |config|
-  config.include(FIXSpec::Matchers)
-end
