@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'fix_spec/helpers'
 
 describe FIXSpec::Helpers do
   include described_class
