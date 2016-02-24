@@ -22,6 +22,7 @@ fix_spec provides Cucumber steps that utilize its RSpec matchers.
 In order to us ethe Cucumber steps, in your `env.rb` you must:
 
 ```ruby
+require "fix_spec"
 require "fix_spec/cucumber"
 ```
 
@@ -83,19 +84,14 @@ The background step isn't provided by fix_spec.  The remaining steps fix_spec pr
 
 #### Building FIX Messages
 
-In order to use the Cucumber steps for building FIX messages, in your `env.rb` you must:
-
-```ruby
-require "fix_spec/builder"
-```
-Now you can use fix_spec builder steps in your features:
+You can build FIX Message messages in your features:
 
 ```cucumber
 Feature: Order Adapter accepts Orders
 
 Scenario: It accepts Market Orders
 
-Given I create a FIX.4.2 message of type "NewOrderSingle" 
+Given I create a FIX.4.2 message of type "NewOrderSingle"
 And I set the FIX message at "SenderCompID" to "MY_SENDER"
 And I set the FIX message at "TargetCompID" to "MY_TARGET"
 And I set the FIX message at "OrdType" to "MARKET"
@@ -139,7 +135,7 @@ FIXSpec works best when a DataDictionary is provided.  With a DataDictionary loa
 The DataDictionary is globally set:
 
 ```ruby
-FIXSpec::data_dictionary = FIXSpec::DataDictionary.new "config/FIX42.xml"
+FIXSpec.data_dictionary = FIXSpec::DataDictionary.new "config/FIX42.xml"
 ```
 
 #### Exclusion
@@ -201,7 +197,7 @@ The names and logos for Connamara Systems are trademarks of Connamara Systems, l
 Licensing
 ---------
 
-fix_spec is Copyright © 2016 Connamara Systems, llc. 
+fix_spec is Copyright © 2016 Connamara Systems, llc.
 
 This software is available under the GPL and a commercial license.  Please see the [LICENSE](LICENSE.txt) file for the terms specified by the GPL license.  The commercial license offers more flexible licensing terms compared to the GPL, and includes support services.  [Contact us](mailto:info@connamara.com) for more information on the Connamara commercial license, what it enables, and how you can start commercial development with it.
 
