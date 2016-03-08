@@ -55,7 +55,14 @@ describe FIXSpec::Helpers do
       ord
     }
 
-    context "field_map_to_hash" do
+    before(:each) do
+      # calling message_to_hash with a set data dictionary converts ints -> field names
+      # this gets confused with random ordering of tests because FIXSpec::application_data_dictionary
+      # behaves like a singleton that doesn't get reset between test runs
+      FIXSpec::application_data_dictionary = nil
+    end
+
+    describe "#field_map_to_hash" do
       let(:hash) { field_map_to_hash order.get_header }
 
       it "should have unordered tags" do
@@ -64,8 +71,8 @@ describe FIXSpec::Helpers do
       end
     end
 
-    context "message_to_hash" do
-      let(:hash) { message_to_hash order }
+    describe "#message_to_hash" do
+      let(:hash) { message_to_hash(order) }
 
       it "should have unordered tags from all message parts" do
         hash[8].should=="FIX.4.2"
@@ -76,12 +83,12 @@ describe FIXSpec::Helpers do
       end
     end
 
-    context 'differences between 4 & 5' do
+    context 'parsing with a DD' do
       let(:message_str) { "8=FIX.4.1\u00019=139\u000135=8\u000134=3\u000149=EXEC\u000152=20121105-23:24:42\u000156=BANZAI\u00016=0\u000111=1352157882577\u000114=0\u000117=1\u000120=0\u000131=0\u000132=0\u000137=1\u000138=10000\u000139=0\u000154=1\u000155=MSFT\u0001150=2\u0001151=0\u000110=059\u0001" }
 
       # Adding this so folks know steps to parse a fix string (it's a little convoluted right now)
       it 'correctly parses fix 4 messages' do
-        FIXSpec::application_data_dictionary= FIXSpec::DataDictionary.new "features/support/FIX42.xml"
+        FIXSpec::application_data_dictionary = FIXSpec::DataDictionary.new("features/support/FIX42.xml")
         msg = FIXSpec::Builder.parse_message(message_str, false)
         fix_hash = FIXSpec::Helpers.message_to_hash(msg)
         fix_hash.keys.all? do |key|
@@ -91,7 +98,7 @@ describe FIXSpec::Helpers do
     end
   end
 
-  describe "get-message-type function" do
+  describe "#extract_message_type" do
     let(:order) {
       ord = quickfix.fix42.NewOrderSingle.new
       ord

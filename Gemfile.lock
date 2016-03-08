@@ -96,6 +96,3 @@ DEPENDENCIES
   quickfix-jruby (~> 1.6.0)
   rake (~> 10.1)
   rspec (~> 2.14)
-
-BUNDLED WITH
-   1.11.2
