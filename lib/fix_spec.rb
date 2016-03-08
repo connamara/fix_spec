@@ -1,6 +1,5 @@
 require 'quickfix'
 require 'json_spec'
-require 'pry'
 
 module FIXSpec
   extend self
