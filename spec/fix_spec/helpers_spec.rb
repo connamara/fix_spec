@@ -82,20 +82,6 @@ describe FIXSpec::Helpers do
         hash[38].should == "100"
       end
     end
-
-    context 'parsing with a DD' do
-      let(:message_str) { "8=FIX.4.1\u00019=139\u000135=8\u000134=3\u000149=EXEC\u000152=20121105-23:24:42\u000156=BANZAI\u00016=0\u000111=1352157882577\u000114=0\u000117=1\u000120=0\u000131=0\u000132=0\u000137=1\u000138=10000\u000139=0\u000154=1\u000155=MSFT\u0001150=2\u0001151=0\u000110=059\u0001" }
-
-      # Adding this so folks know steps to parse a fix string (it's a little convoluted right now)
-      it 'correctly parses fix 4 messages' do
-        FIXSpec::application_data_dictionary = FIXSpec::DataDictionary.new("features/support/FIX42.xml")
-        msg = FIXSpec::Builder.parse_message(message_str, false)
-        fix_hash = FIXSpec::Helpers.message_to_hash(msg)
-        fix_hash.keys.all? do |key|
-          expect(key).to be_a String
-        end
-      end
-    end
   end
 
   describe "#extract_message_type" do
