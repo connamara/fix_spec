@@ -9,4 +9,5 @@ group :development do
   gem "jeweler", "~> 1.8"
   gem "cucumber", "~> 1.3"
   gem "rake", "~> 10.1"
+  gem 'pry'
 end

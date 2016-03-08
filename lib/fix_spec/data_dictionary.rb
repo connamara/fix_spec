@@ -4,17 +4,21 @@ require 'rexml/document'
 
 module FIXSpec
   class DataDictionary < quickfix.DataDictionary
+    attr_reader :fileName
 
-    def initialize fileName
-      super fileName
-      @reverse_lookup = Hash.new
+    def initialize(fileName)
+      @fileName = fileName
 
-      parse_xml(fileName)
+      super(@fileName)
+    end
+
+    def reverse_lookup
+      @reverse_lookup ||= parse_xml
     end
 
     def get_reverse_value_name(tag, name)
-      if(@reverse_lookup[tag].has_key?(name))
-        @reverse_lookup[tag][name]
+      if(reverse_lookup[tag].has_key?(name))
+        reverse_lookup[tag][name]
       else
         name
       end
@@ -22,21 +26,26 @@ module FIXSpec
 
     private
 
-    def parse_xml fileName
-      doc = REXML::Document.new File.new(fileName)
-      doc.elements.each("fix/fields/field") do |f| 
+    def parse_xml
+      lookup = {}
+
+      doc = REXML::Document.new File.new(@fileName)
+
+      doc.elements.each("fix/fields/field") do |f|
         tag = f.attributes['number'].to_i
-        @reverse_lookup[tag]||={}
+        lookup[tag]||={}
 
         f.elements.each("value") do |v|
-          @reverse_lookup[ tag ][v.attributes['description'] ] = v.attributes['enum']
+          lookup[ tag ][v.attributes['description'] ] = v.attributes['enum']
         end
       end
 
       #also map pretty msg type names
-      doc.elements.each("fix/messages/message") do |m| 
-        @reverse_lookup[35][m.attributes['name']] = m.attributes['msgtype']
+      doc.elements.each("fix/messages/message") do |m|
+        lookup[35][m.attributes['name']] = m.attributes['msgtype']
       end
+
+      lookup
     end
   end
 end

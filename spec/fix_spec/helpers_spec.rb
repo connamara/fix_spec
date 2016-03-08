@@ -41,11 +41,9 @@ describe FIXSpec::Helpers do
       msg="8=FIX.4.235=849=ITG56=SILO205=410=045"
       fixify_string(msg).should ==("8=FIX.4.2\0019=26\00135=8\00149=ITG\00156=SILO\001205=4\00110=084\001")
     end
-
-
   end
 
-  describe "message-to-hash functions"  do
+  describe "#message_to_hash"  do
     let(:order) {
       ord = quickfix.fix42.NewOrderSingle.new
       ord.header.set(quickfix.field.TargetCompID.new "target")
@@ -57,21 +55,28 @@ describe FIXSpec::Helpers do
       ord
     }
 
-    context "field_map_to_hash" do
+    before(:each) do
+      # calling message_to_hash with a set data dictionary converts ints -> field names
+      # this gets confused with random ordering of tests because FIXSpec::application_data_dictionary
+      # behaves like a singleton that doesn't get reset between test runs
+      FIXSpec::application_data_dictionary = nil
+    end
+
+    describe "#field_map_to_hash" do
       let(:hash) { field_map_to_hash order.get_header }
 
       it "should have unordered tags" do
-        hash[8].should=="FIX.4.2" 
-        hash[35].should=="D" 
+        hash[8].should=="FIX.4.2"
+        hash[35].should=="D"
       end
     end
 
-    context "message_to_hash" do
-      let(:hash) { message_to_hash order }
+    describe "#message_to_hash" do
+      let(:hash) { message_to_hash(order) }
 
       it "should have unordered tags from all message parts" do
-        hash[8].should=="FIX.4.2" 
-        hash[35].should=="D" 
+        hash[8].should=="FIX.4.2"
+        hash[35].should=="D"
         hash[1].should=="account"
         hash[44].should == "75"
         hash[38].should == "100"
@@ -79,7 +84,7 @@ describe FIXSpec::Helpers do
     end
   end
 
-  describe "get-message-type function" do
+  describe "#extract_message_type" do
     let(:order) {
       ord = quickfix.fix42.NewOrderSingle.new
       ord

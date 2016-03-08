@@ -1,11 +1,13 @@
 language: ruby
 rvm:
-- jruby-18mode
-- jruby-19mode
-- jruby
-env:
-- JAVA_OPTS=-XX:MaxPermSize=2048m
+  - jruby-18mode
+  - jruby-19mode
+  - jruby
+
+jdk:
+  - oraclejdk8
 
 matrix:
   allow_failures:
     - rvm: jruby-18mode
+
