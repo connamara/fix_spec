@@ -48,7 +48,7 @@ def add_field msgPart, fieldName, fieldValue
       msgPart = msgPart.get_trailer
     end
 
-    case FIXSpec::data_dictionary.get_field_type_enum(tag).get_name
+    case FIXSpec::data_dictionary.get_field_type(tag).name
       when "INT","DAYOFMONTH" then
         msgPart.setInt(tag, fieldValue.to_i)
       when "PRICE","FLOAT","QTY" then

@@ -1,7 +1,7 @@
-source "http://rubygems.org"
+source 'https://rubygems.org'
 
 gem "json_spec", "~> 1.1.1"
-gem "quickfix-jruby", "~>1.6.0"
+gem 'quickfix-jruby', '~> 1.6', '>= 1.6.4'
 gem "cuke_mem", "~> 0.1.1"
 
 group :development do

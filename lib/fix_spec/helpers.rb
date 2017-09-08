@@ -43,8 +43,8 @@ module FIXSpec
 
     def find_field_type tag, data_dictionaries = []
       data_dictionaries.each do |dd|
-        enum = dd.get_field_type_enum(tag)
-        value = enum.get_name unless enum.nil?
+        enum = dd.get_field_type(tag)
+        value = enum.name unless enum.nil?
         return value unless value.nil? or value.eql?("")
       end
     end
