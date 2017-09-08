@@ -5,7 +5,7 @@ Feature: Building Fix Messages with repeating groups from raw fix
 Scenario: Building fix message with 2 instances in a repeated group (prior to FIXT/FIX50)
 Given the following fix message: 
 """
-8=FIX.4.235=B49=ITG56=SILO148=Market Bulls Have Short Sellers on the Run33=258=The bears have been cowed by the bulls.58=Buy buy buy354=043=N40=15=N
+8=FIX.4.235=B43=N49=ITG56=SILO148=Market Bulls Have Short Sellers on the Run33=258=The bears have been cowed by the bulls.58=Buy buy buy354=0
 """
 When I get the fix message
 
@@ -34,7 +34,7 @@ Then the FIX message should be:
 Scenario: Building fix message with 2 instances in a repeated group (using FIXT/FIX50)
 Given the following fix message: 
 """
-8=FIXT.1.135=B49=ITG56=SILO148=Market Bulls Have Short Sellers on the Run33=258=The bears have been cowed by the bulls.58=Buy buy buy354=043=N40=15=N
+8=FIXT.1.135=B43=N49=ITG56=SILO148=Market Bulls Have Short Sellers on the Run33=258=The bears have been cowed by the bulls.58=Buy buy buy354=0
 """
 When I get the fix message
 
