@@ -49,17 +49,25 @@ def add_field msgPart, fieldName, fieldValue
     end
 
     case FIXSpec::data_dictionary.get_field_type(tag).name
-      when "INT","DAYOFMONTH" then
+    when "DAYOFMONTH" then
+      msgPart.setInt(tag, fieldValue.to_i)
+    when "PRICE","FLOAT","QTY" then
+      msgPart.setDouble(tag, fieldValue.to_f)
+    when "BOOLEAN" then
+      msgPart.setBoolean(tag, fieldValue == "true")
+    when "INT" then
+      if FIXSpec::data_dictionary.reverse_lookup[tag].empty? # not enum
         msgPart.setInt(tag, fieldValue.to_i)
-      when "PRICE","FLOAT","QTY" then
-        msgPart.setDouble(tag, fieldValue.to_f)
-      when "BOOLEAN" then
-        msgPart.setBoolean(tag, fieldValue == "true")
-      else
-        #enum description => enum value
-        #e.g. tag 54 "BUY"=>"1"
-        fieldValue = FIXSpec::data_dictionary.get_reverse_value_name(tag, fieldValue)
+      else # enum
+        msgPart.setString(tag, FIXSpec::data_dictionary.get_reverse_value_name(tag, fieldValue))
+      end
+    else
+      if FIXSpec::data_dictionary.reverse_lookup[tag].empty? # not enum
         msgPart.setString(tag, fieldValue)
+      else # enum
+        fieldValue = FIXSpec::data_dictionary.get_reverse_value_name(tag, fieldValue)
+        msgPart.setString(tag, FIXSpec::data_dictionary.get_reverse_value_name(tag, fieldValue))
+      end
     end
   else
     tag = fieldName.to_i

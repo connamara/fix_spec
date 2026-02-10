@@ -5958,6 +5958,7 @@
       <value enum="0" description="COVERED"/>
       <value enum="1" description="UNCOVERED"/>
     </field>
+    <field number='205' name='MaturityDay' type='DAYOFMONTH' />
     <field number="206" name="OptAttribute" type="CHAR"/>
     <field number="207" name="SecurityExchange" type="EXCHANGE"/>
     <field number="208" name="NotifyBrokerOfCredit" type="BOOLEAN">
